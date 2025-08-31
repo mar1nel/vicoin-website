@@ -130,8 +130,6 @@ const ShopPage = () => {
     return (
         <>
             <Navbar />
-
-            {/* ─── 1. FEATURED ───────────────────────────── */}
             <section className="shop-section">
                 <div className="wrapper-shop-upper">
                     {decorativeImages.map((img, i) => (
@@ -166,30 +164,67 @@ const ShopPage = () => {
             </section>
 
             {/* ─── 2. DISCOUNT PICKS (same items, alt image trick) ─── */}
+            {/*<section className="shop-section">*/}
+            {/*    <div className="wrapper-shop-down">*/}
+            {/*        <h2 className="shop-title-down">Discount Picks</h2>*/}
+            {/*        <div className="cards-grid">*/}
+            {/*            {inStock.map(c => {*/}
+            {/*                // keep your “shift” trick to vary images, but default to imageUrl*/}
+            {/*                const sid = ((c.id - 1 + 5) % 10) + 1;*/}
+            {/*                const altImage =*/}
+            {/*                    products.find(p => p.id === sid)?.imageUrl || defaultImage;*/}
+            {/*                return (*/}
+            {/*                    <CoffeeCard*/}
+            {/*                        key={c.id}*/}
+            {/*                        coffeeId={c.id}*/}
+            {/*                        name={c.name}*/}
+            {/*                        description={c.description}*/}
+            {/*                        price={c.price}*/}
+            {/*                        stock={c.stock}*/}
+            {/*                        image={altImage}*/}
+            {/*                    />*/}
+            {/*                );*/}
+            {/*            })}*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*</section>*/}
+
+            {/* ─── 2. DISCOUNT PICKS (rotate images by index) ─── */}
             <section className="shop-section">
                 <div className="wrapper-shop-down">
                     <h2 className="shop-title-down">Discount Picks</h2>
+
                     <div className="cards-grid">
-                        {inStock.map(c => {
-                            // keep your “shift” trick to vary images, but default to imageUrl
-                            const sid = ((c.id - 1 + 5) % 10) + 1;
-                            const altImage =
-                                products.find(p => p.id === sid)?.imageUrl || defaultImage;
-                            return (
-                                <CoffeeCard
-                                    key={c.id}
-                                    coffeeId={c.id}
-                                    name={c.name}
-                                    description={c.description}
-                                    price={c.price}
-                                    stock={c.stock}
-                                    image={altImage}
-                                />
+                        {(() => {
+                            const items = inStock;
+                            if (items.length === 0) return null;
+
+                            // Build a parallel array of safe image URLs
+                            const imgs = items.map(p =>
+                                (p.imageUrl && p.imageUrl.trim()) || defaultImage
                             );
-                        })}
+
+                            const OFFSET = 5; // your “shift” amount; tweak as you like
+
+                            return items.map((c, i) => {
+                                const altImage = imgs[(i + OFFSET) % imgs.length];
+                                return (
+                                    <CoffeeCard
+                                        key={`discount-${c.id}`}
+                                        coffeeId={c.id}
+                                        name={c.name}
+                                        description={c.description}
+                                        price={c.price}
+                                        stock={c.stock}
+                                        image={altImage}
+                                    />
+                                );
+                            });
+                        })()}
                     </div>
                 </div>
             </section>
+
 
             {/* ─── 3. SOLD-OUT ITEMS ──────────────────────── */}
             {outOfStock.length > 0 && (

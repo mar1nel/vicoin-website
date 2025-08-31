@@ -60,10 +60,10 @@ function CoffeeCard({ coffee, onEdit, onArchiveToggle }) {
 
 function CoffeeEditor({ open, initial, onClose, onSave }) {
     const [form, setForm] = useState(
-        initial ?? { name: "", price: 0, stock: 0, imageUrl: "" }
+        initial ?? { name: "", price: 0, stock: 0, imageUrl: "" , description: ""}
     );
     useEffect(() => {
-        if (open) setForm(initial ?? { name: "", price: 0, stock: 0, imageUrl: "" });
+        if (open) setForm(initial ?? { name: "", price: 0, stock: 0, imageUrl: "" , description : ""});
     }, [open, initial]);
 
     const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
@@ -92,7 +92,14 @@ function CoffeeEditor({ open, initial, onClose, onSave }) {
                         Image URL
                         <input value={form.imageUrl || ""} onChange={(e) => update("imageUrl", e.target.value)}/>
                     </label>
-
+                    <label>
+                        Description
+                        <textarea
+                            rows={3}
+                            value={form.description || ""}
+                            onChange={(e) => update("description", e.target.value)}
+                        />
+                    </label>
                     {form.imageUrl && (
                         <div className="preview">
                             <img src={form.imageUrl} alt="preview"/>
